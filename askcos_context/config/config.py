@@ -16,25 +16,25 @@ DEFAULT_FP_CONFIG = FpModelConfig(
     radius=3,
     reagents_path=CONTEXT_DIR / "stage0" / "reagents_list_minocc100.json",
     reagents_model_path=(
-        STAGE_1_DIR /
-        "fp_multicategorical_50_input_reagents_fplength16384_fpradius3" /
-        "model-densegraph-04-4.18.hdf5.final-tf.20191118",
+        STAGE_1_DIR
+        / "fp_multicategorical_50_input_reagents_fplength16384_fpradius3"
+        / "model-densegraph-04-4.18.hdf5.final-tf.20191118",
     ),
     temperature_model_path=(
-        STAGE_2_DIR /
-        "50_temperature_regression_fp_baseline" /
-        "model-densegraph-24-0.02.hdf5.final-tf.20191118",
+        STAGE_2_DIR
+        / "50_temperature_regression_fp_baseline"
+        / "model-densegraph-24-0.02.hdf5.final-tf.20191118",
     ),
     reagent_quantity_model_path=(
-        STAGE_3_DIR /
-        "50_amount_regression_fp_baseline" /
-        "model-densegraph-12-0.00.hdf5.final-tf.20191118",
+        STAGE_3_DIR
+        / "50_amount_regression_fp_baseline"
+        / "model-densegraph-12-0.00.hdf5.final-tf.20191118",
     ),
     reactant_quantity_model_path=(
-        CONTEXT_DIR /
-        "stage3" /
-        "50_amount_reactant_regression_fp_baseline_dense2048_3" /
-        "model-densegraph-24-0.05.hdf5.final-tf.20191118",
+        CONTEXT_DIR
+        / "stage3"
+        / "50_amount_reactant_regression_fp_baseline_dense2048_3"
+        / "model-densegraph-24-0.05.hdf5.final-tf.20191118",
     ),
 )
 
@@ -43,25 +43,24 @@ DEFAULT_FP_SMALL_CONFIG = FpModelConfig(
     radius=3,
     reagents_path=CONTEXT_DIR / "stage0" / "reagents_list_minocc100.json",
     reagents_model_path=(
-        STAGE_1_DIR /
-        "fp_multicategorical_50_input_reagents_fplength2048_fpradius3" /
-        "model-densegraph-04-4.27.hdf5.final-tf.20191118",
+        STAGE_1_DIR
+        / "fp_multicategorical_50_input_reagents_fplength2048_fpradius3"
+        / "model-densegraph-04-4.27.hdf5.final-tf.20191118",
     ),
     temperature_model_path=(
-        STAGE_2_DIR /
-        "50_temperature_regression_fp_baseline_fp2048" /
-        "model-densegraph-40-0.02.hdf5.final-tf.20191118",
+        STAGE_2_DIR
+        / "50_temperature_regression_fp_baseline_fp2048"
+        / "model-densegraph-40-0.02.hdf5.final-tf.20191118",
     ),
     reagent_quantity_model_path=(
-        STAGE_3_DIR /
-        "50_amount_regression_fp_baseline_fp2048" /
-        "model-densegraph-48-0.00.hdf5.final-tf.20191118",
+        STAGE_3_DIR
+        / "50_amount_regression_fp_baseline_fp2048"
+        / "model-densegraph-48-0.00.hdf5.final-tf.20191118",
     ),
     reactant_quantity_model_path=(
-        STAGE_3_DIR /
-        "50_amount_reactant_regression_fp_baseline_fp2048_dense512",
+        STAGE_3_DIR / "50_amount_reactant_regression_fp_baseline_fp2048_dense512",
         "model-densegraph-04-0.05.hdf5.final-tf.20191118",
-    )
+    ),
 )
 
 DEFAULT_GRAPH_CONFIG = GraphModelConfig(
@@ -69,24 +68,22 @@ DEFAULT_GRAPH_CONFIG = GraphModelConfig(
     condensed_graph=True,
     reagents_path=CONTEXT_DIR / "stage0" / "reagents_list_minocc100.json",
     reagents_model_path=(
-        STAGE_1_DIR /
-        "50_multicategorical_input_reagents_wlnlen512_wlnstep3" /
-        "model-densegraph-08-4.08.hdf5.final-tf.20191118"
+        STAGE_1_DIR
+        / "50_multicategorical_input_reagents_wlnlen512_wlnstep3"
+        / "model-densegraph-08-4.08.hdf5.final-tf.20191118"
     ),
     temperature_model_path=(
-        STAGE_2_DIR /
-        "50_temperature_regression" /
-        "model-densegraph-16-0.02.hd5.final-tf.20191118",
+        STAGE_2_DIR
+        / "50_temperature_regression"
+        / "model-densegraph-16-0.02.hd5.final-tf.20191118",
     ),
     reagent_quantity_model_path=(
-        STAGE_3_DIR /
-        "50_amount_regression" /
-        "model-densegraph-08-0.0.hdf5.final-tf.20191118",
+        STAGE_3_DIR / "50_amount_regression" / "model-densegraph-08-0.0.hdf5.final-tf.20191118",
     ),
     reactant_quantity_model_path=(
-        STAGE_3_DIR /
-        "50_amount_reactant_regression_dense2048_3" /
-        "model-densegraph-08-0.05.hdf5.final-tf.2019118",
+        STAGE_3_DIR
+        / "50_amount_reactant_regression_dense2048_3"
+        / "model-densegraph-08-0.05.hdf5.final-tf.2019118",
     ),
 )
 
@@ -96,6 +93,6 @@ DEFAULT_CONFIG = ContextConfig(
     model_configs={
         "fp-20191118": DEFAULT_FP_CONFIG,
         "fp-small-20191118": DEFAULT_FP_SMALL_CONFIG,
-        "graph-20191118": DEFAULT_GRAPH_CONFIG
-    }
+        "graph-20191118": DEFAULT_GRAPH_CONFIG,
+    },
 )

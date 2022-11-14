@@ -101,9 +101,7 @@ def smiles2features(s):
     """
     mol = Chem.MolFromSmiles(s)
     if mol is None:
-        sys.stderr.write(
-            "rdkit Chem.MolFromSmiles() fails with sanitizer, s=" + s + "\n"
-        )
+        sys.stderr.write("rdkit Chem.MolFromSmiles() fails with sanitizer, s=" + s + "\n")
         raise ValueError("rdkit Chem.MolFromSmiles() fails with sanitizer")
     atom_features = []
     atom_ring_info = mol.GetRingInfo().AtomRings()  # e.g. ((0, 5, 4, 3, 2, 1),)
@@ -224,9 +222,7 @@ def feature_statistics_perfeature(s=None, features=None):
             for b in f["bond_features"]:
                 s["bond_order"].add(b["order"])
             for a in f["atom_features"]:
-                s["max_bonds_per_atom"] = max(
-                    s["max_bonds_per_atom"], len(a["bonds_idx"])
-                )
+                s["max_bonds_per_atom"] = max(s["max_bonds_per_atom"], len(a["bonds_idx"]))
                 s["max_rings"] = max(s["max_rings"], len(a["ring_size"]))
                 for i in a["ring_size"]:
                     s["max_ring_size"] = max(i, s["max_ring_size"])
@@ -277,9 +273,7 @@ def feature_statistics(features):
             for b in f["bond_features"]:
                 s["bond_order"].add(b["order"])
             for a in f["atom_features"]:
-                s["max_bonds_per_atom"] = max(
-                    s["max_bonds_per_atom"], len(a["bonds_idx"])
-                )
+                s["max_bonds_per_atom"] = max(s["max_bonds_per_atom"], len(a["bonds_idx"]))
                 s["max_rings"] = max(s["max_rings"], len(a["ring_size"]))
                 for i in a["ring_size"]:
                     s["max_ring_size"] = max(i, s["max_ring_size"])
@@ -337,9 +331,7 @@ def build_oneatom_feature(
     if nrings_encode != 0:
         length = min(len(a["ring_size"]), nrings_encode)
         for i in range(length):
-            res += encode_onehot(
-                a["ring_size"][i], s["enumerate_list_atom"]["ring_size"]
-            )
+            res += encode_onehot(a["ring_size"][i], s["enumerate_list_atom"]["ring_size"])
             nrings_encode -= 1
         res += [0] * (s["enumerate_list_atom"]["ring_size"][None] + 1) * nrings_encode
     return np.array(res, dtype=np.float32)
@@ -651,10 +643,7 @@ def encode_features_atommapped(f, s, isrand=False):
         nrings_encode=0,
     )
     f2 = build_oneatom_feature(
-        f["products"]["atom_features"][0],
-        s,
-        property_list_onehot,
-        nrings_encode=nrings_encode,
+        f["products"]["atom_features"][0], s, property_list_onehot, nrings_encode=nrings_encode
     )
     len_feature_headers = len(f1)
     len_feature_chemicals = len(f2)
@@ -712,9 +701,7 @@ def encode_features_atommapped(f, s, isrand=False):
     conn1 = build_conn_mat_mapped(
         f["reactants"]["bond_features"], s, atom_idx2atom_map_num_reactant
     )
-    conn2 = build_conn_mat_mapped(
-        f["products"]["bond_features"], s, atom_idx2atom_map_num_product
-    )
+    conn2 = build_conn_mat_mapped(f["products"]["bond_features"], s, atom_idx2atom_map_num_product)
     return atom, bond1, bond2, conn1, conn2
 
 
@@ -727,19 +714,11 @@ def __test_encode_features():
     f4 = rxn2features(s4)
     s = feature_statistics([f2, f3])
     atom, bond1, bond2, conn1, conn2 = encode_features_atommapped(f3, s, isrand=True)
-    assert (
-        build_mol_from_encoding(atom, bond1, conn1, s) == "CCCCCCCCCCCCCCCCCC(=O)O.Cl"
-    )
-    assert (
-        build_mol_from_encoding(atom, bond2, conn2, s) == "CCCCCCCCCCCCCCCCCC(=O)Cl.O"
-    )
+    assert build_mol_from_encoding(atom, bond1, conn1, s) == "CCCCCCCCCCCCCCCCCC(=O)O.Cl"
+    assert build_mol_from_encoding(atom, bond2, conn2, s) == "CCCCCCCCCCCCCCCCCC(=O)Cl.O"
     atom, bond1, bond2, conn1, conn2 = encode_features_atommapped(f4, s, isrand=False)
-    assert (
-        build_mol_from_encoding(atom, bond1, conn1, s) == "CCCCCCCCCCCCCCCCCC(=O)O.Cl"
-    )
-    assert (
-        build_mol_from_encoding(atom, bond2, conn2, s) == "CCCCCCCCCCCCCCCCCC(=O)Cl.O"
-    )
+    assert build_mol_from_encoding(atom, bond1, conn1, s) == "CCCCCCCCCCCCCCCCCC(=O)O.Cl"
+    assert build_mol_from_encoding(atom, bond2, conn2, s) == "CCCCCCCCCCCCCCCCCC(=O)Cl.O"
 
 
 def merge_dense_graph(atom, bond1, bond2, conn1, conn2):
@@ -805,9 +784,7 @@ def encode_features_onemol(f, s, isrand=False):
         else:
             features_atom = np.zeros(len_feature_atom)
         atom[i, :] = np.array(features_atom)
-    bond = build_allbond_featrue_mapped(
-        f["bond_features"], s, new_atom_idx2old_atom_idx
-    )
+    bond = build_allbond_featrue_mapped(f["bond_features"], s, new_atom_idx2old_atom_idx)
     conn = build_conn_mat_mapped(f["bond_features"], s, new_atom_idx2old_atom_idx)
     return atom, bond, conn
 
@@ -824,9 +801,7 @@ def __test_encode_features_non_mapped():
     f2 = rxn2features(s2)
     f3 = rxn2features(s3)
     s = feature_statistics([f2, f3])
-    atom1, bond1, conn1, atom2, bond2, conn2 = encode_features_non_mapped(
-        f3, s, isrand=True
-    )
+    atom1, bond1, conn1, atom2, bond2, conn2 = encode_features_non_mapped(f3, s, isrand=True)
     assert build_mol_from_encoding(atom1, bond1, conn1, s) == "CCCCCCCCCCCCCCCCCC(=O)O"
     assert build_mol_from_encoding(atom2, bond2, conn2, s) == "CCCCCCCCCCCCCCCCCC(=O)Cl"
 

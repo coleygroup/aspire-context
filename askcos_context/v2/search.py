@@ -96,9 +96,7 @@ def beam_search(
                 tf.convert_to_tensor(r, dtype=tf.float32), shape=(1, vacab_size)
             )
             y_pred = model(**model_inputs)["softmax_1"].numpy()
-            y_pred_class_num = np.flip(np.argsort(y_pred, axis=-1), axis=-1)[
-                0, 0:beam_size
-            ]
+            y_pred_class_num = np.flip(np.argsort(y_pred, axis=-1), axis=-1)[0, 0:beam_size]
             y_pred_class_score = y_pred[0, y_pred_class_num]
             for i in range(len(y_pred_class_num)):
                 n = y_pred_class_num[i]
@@ -116,9 +114,7 @@ def beam_search(
             input_reagent = remove_duplicates_results(new_input_reagent)
         else:
             # keep beam_size only
-            input_reagent = top_n_results(
-                new_input_reagent, n=beam_size, remove_duplicates=True
-            )
+            input_reagent = top_n_results(new_input_reagent, n=beam_size, remove_duplicates=True)
         # early termination, assume score < 1
         if len(res) > beam_size:
             res_top = top_n_results(res, n=beam_size, remove_duplicates=True)

@@ -17,9 +17,7 @@ def add_batch_dimension(x):
     Insert a new axis at position 0 to the array or each array in the list.
     """
     if isinstance(x, list):
-        return [
-            tf.convert_to_tensor(np.expand_dims(i, axis=0), dtype=tf.float32) for i in x
-        ]
+        return [tf.convert_to_tensor(np.expand_dims(i, axis=0), dtype=tf.float32) for i in x]
     else:
         return tf.convert_to_tensor(np.expand_dims(x, axis=0), dtype=tf.float32)
 
@@ -120,18 +118,14 @@ class ReactionContextRecommenderBase:
     def load_models(self):
         # reagent encoder/decoder
         with open(self.reagent_encoder_path, "r") as f:
-            self.reagent_encoder = results_preprocess.generate_reagents_encoder2(
-                json.load(f)
-            )
+            self.reagent_encoder = results_preprocess.generate_reagents_encoder2(json.load(f))
         self.reagent_decoder = {v: k for k, v in self.reagent_encoder.items()}
 
         # reagent predictor
         self.reagent_model_tf, self.reagent_model = load_model(self.reagent_model_path)
 
         # temperature predictor
-        self.temperature_model_tf, self.temperature_model = load_model(
-            self.temperature_model_path
-        )
+        self.temperature_model_tf, self.temperature_model = load_model(self.temperature_model_path)
 
         # reagent quantity predictor
         self.reagent_quantity_model_tf, self.reagent_quantity_model = load_model(
@@ -142,7 +136,7 @@ class ReactionContextRecommenderBase:
         self.reactant_quantity_model_tf, self.reactant_quantity_model = load_model(
             self.reactant_quantity_model_path
         )
-    
+
     @abstractmethod
     def encode_condensed_graph(self, smiles, **kwargs):
         """
@@ -163,16 +157,11 @@ class ReactionContextRecommenderBase:
         for i in reagents:
             r.append({"smiles": i})
         reagents_onehot = results_preprocess.prepare_reagents2(self.reagent_encoder, r)
-        reagents_multiclass = results_preprocess.convert_onehots_to_multiclass(
-            reagents_onehot
-        )
+        reagents_multiclass = results_preprocess.convert_onehots_to_multiclass(reagents_onehot)
         return add_batch_dimension(reagents_multiclass)
 
     def decode_reagents(self, encoded_reagents):
-        return [
-            self.reagent_decoder[i]
-            for i in np.where(np.abs(encoded_reagents - 1.0) < 1e-6)[0]
-        ]
+        return [self.reagent_decoder[i] for i in np.where(np.abs(encoded_reagents - 1.0) < 1e-6)[0]]
 
     def predict_reagents(
         self,
@@ -240,9 +229,7 @@ class ReactionContextRecommenderBase:
             amount[self.reagent_decoder[i]] = float(np.exp(y_pred[0, i]))
         return amount
 
-    def predict_reactant_quantities(
-        self, smiles=None, reagents=None, encoded_reagents=None
-    ):
+    def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
         """
         Predict reactant quantities. Should be implemented by child class.
         """
@@ -316,7 +303,7 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
     def __init__(
         self,
         model_name=DEFAULT_CONFIG.default_models["graph"],
-        config: Optional[GraphModelConfig] = None
+        config: Optional[GraphModelConfig] = None,
     ):
         super().__init__(model_name, config)
 
@@ -359,9 +346,7 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
             "Input_conn": tf.convert_to_tensor(conn, dtype=tf.float32),
         }
 
-    def predict_reactant_quantities(
-        self, smiles=None, reagents=None, encoded_reagents=None
-    ):
+    def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
         """
         Reactants in smiles are splitted by '.'
 
@@ -373,14 +358,9 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
         """
         # all reactants and products
         f = graph_util.rxn2features(smiles)
-        (
-            atom1,
-            bond1,
-            conn1,
-            atom2,
-            bond2,
-            conn2,
-        ) = graph_util.encode_features_non_mapped(f, self.feature_encoder, isrand=False)
+        (atom1, bond1, conn1, atom2, bond2, conn2) = graph_util.encode_features_non_mapped(
+            f, self.feature_encoder, isrand=False
+        )
         atom1, bond1, conn1, atom2, bond2, conn2 = add_batch_dimension(
             [atom1, bond1, conn1, atom2, bond2, conn2]
         )
@@ -407,15 +387,11 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
                     len(reactants), self.max_num_reactants
                 )
             )
-        atom_dim, atom_nfeature, bond_nfeature = get_input_dims(
-            atom1, bond1, batched=True
-        )
+        atom_dim, atom_nfeature, bond_nfeature = get_input_dims(atom1, bond1, batched=True)
         mask = np.zeros((1, self.max_num_reactants), dtype=np.float32)
         for i, r in enumerate(reactants):
             f = graph_util.smiles2features(r)
-            a, b, c = graph_util.encode_features_onemol(
-                f, self.feature_encoder, isrand=False
-            )
+            a, b, c = graph_util.encode_features_onemol(f, self.feature_encoder, isrand=False)
             data_input[f"Input_atom_{i}"] = add_batch_dimension(a)
             data_input[f"Input_bond_{i}"] = add_batch_dimension(b)
             data_input[f"Input_conn_{i}"] = add_batch_dimension(c)
@@ -423,15 +399,11 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
 
         # append empty vector
         for i in range(len(reactants), self.max_num_reactants):
-            data_input[f"Input_atom_{i}"] = tf.zeros(
-                (1, atom_dim, atom_nfeature), dtype=tf.float32
-            )
+            data_input[f"Input_atom_{i}"] = tf.zeros((1, atom_dim, atom_nfeature), dtype=tf.float32)
             data_input[f"Input_bond_{i}"] = tf.zeros(
                 (1, atom_dim, atom_dim, bond_nfeature), dtype=tf.float32
             )
-            data_input[f"Input_conn_{i}"] = tf.zeros(
-                (1, atom_dim, atom_dim), dtype=tf.float32
-            )
+            data_input[f"Input_conn_{i}"] = tf.zeros((1, atom_dim, atom_dim), dtype=tf.float32)
 
         data_input["Input_reactant_mask"] = tf.convert_to_tensor(mask, dtype=tf.float32)
         y_pred = self.reactant_quantity_model(**data_input)["multiply_1"].numpy()
@@ -480,9 +452,7 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
         input_fp = np.concatenate([r_fp, p_fp], axis=-1)
         return {"Input_fp": add_batch_dimension(input_fp)}
 
-    def predict_reactant_quantities(
-        self, smiles=None, reagents=None, encoded_reagents=None
-    ):
+    def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
         """
         Reactants in smiles are splitted by '.'
 
@@ -518,9 +488,7 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
 
         # append empty vector
         for i in range(len(reactants), self.max_num_reactants):
-            data_input[f"Input_fp_reactant_{i}"] = tf.zeros(
-                (1, self.length), dtype=tf.float32
-            )
+            data_input[f"Input_fp_reactant_{i}"] = tf.zeros((1, self.length), dtype=tf.float32)
 
         data_input["Input_reactant_mask"] = tf.convert_to_tensor(mask, dtype=tf.float32)
         y_pred = self.reactant_quantity_model(**data_input)["multiply_1"].numpy()

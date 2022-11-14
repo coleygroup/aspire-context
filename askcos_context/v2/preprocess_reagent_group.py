@@ -56,9 +56,7 @@ def get_smiles_charge_single_mol(s):
     q = SMILES2CHARGE.get(s, None)
     if q is None:
         try:
-            mol = Chem.MolFromSmiles(
-                canonicalize_smiles_reagent_conv_rules(s), sanitize=False
-            )
+            mol = Chem.MolFromSmiles(canonicalize_smiles_reagent_conv_rules(s), sanitize=False)
         except Exception:
             raise ValueError("get_smiles_charge(): MolFromSmiles() fails, s=" + s)
         if mol is None:
@@ -115,13 +113,9 @@ def preprocess_reagents(reagents):
         print("reagents: ", reagents)
         print("reagents_neutral: ", reagents_neutral)
         print("reagents_charged: ", reagents_charged)
-        raise ValueError(
-            "preprocess_reagents(): total charge is not zero, q=" + str(total_charge)
-        )
+        raise ValueError("preprocess_reagents(): total charge is not zero, q=" + str(total_charge))
     if len(reagents_charged) > 0:
-        reagents_neutral.add(
-            smiles_util.canonicalize_smiles(".".join(reagents_charged))
-        )
+        reagents_neutral.add(smiles_util.canonicalize_smiles(".".join(reagents_charged)))
     reagents_neutral = list(reagents_neutral)
 
     # Rule 3, Canonicalization, replace using reagent_conv_rules.json
@@ -131,9 +125,7 @@ def preprocess_reagents(reagents):
         tmp1, tmp2 = split_neutral_fragment([tmp])
         if len(tmp2) != 0:
             sys.stderr.write(
-                "preprocess_reagents(): error: charged fragment, s="
-                + str(reagents)
-                + "\n"
+                "preprocess_reagents(): error: charged fragment, s=" + str(reagents) + "\n"
             )
         for s in tmp1:
             res.add(s)

@@ -39,9 +39,7 @@ def prepare_reagents2(encoder, reagents):
         idx = encoder.get(smiles_util.canonicalize_smiles(valid_reagents[i]), None)
         if idx is None:
             sys.stderr.write(
-                "prepare_reagents2(): encoder missing smiles="
-                + valid_reagents[i]
-                + "\n"
+                "prepare_reagents2(): encoder missing smiles=" + valid_reagents[i] + "\n"
             )
         else:
             res[i, idx] = 1
