@@ -142,7 +142,6 @@ class ReactionContextRecommenderBase:
         """
         Encodes the input SMILES string. Should be implemented by child class.
         """
-        raise NotImplementedError
 
     def encode_reagents(self, reagents):
         """
@@ -229,11 +228,11 @@ class ReactionContextRecommenderBase:
             amount[self.reagent_decoder[i]] = float(np.exp(y_pred[0, i]))
         return amount
 
+    @abstractmethod
     def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
         """
         Predict reactant quantities. Should be implemented by child class.
         """
-        raise NotImplementedError
 
     def predict(self, smiles, beam_size=10, reagents=None):
         """
