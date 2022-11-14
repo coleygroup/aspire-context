@@ -134,3 +134,4 @@ dmypy.json
 *.pb
 *.pkl
 *.pickle
+askcos_context/_version.py
