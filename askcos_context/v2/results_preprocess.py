@@ -3,14 +3,15 @@
 import sys
 import numpy as np
 
-from context.v2 import preprocess_reagent_group, smiles_util
+from askcos_context.v2 import preprocess_reagent_group
+from askcos_context.v2.utils import canonicalize_smiles
 
 
 def generate_reagents_encoder2(all_reagents):
     enc = {None: 0}
     cnt = 0
     for r in all_reagents:
-        s = smiles_util.canonicalize_smiles(r)
+        s = canonicalize_smiles(r)
         if s is None:
             raise RuntimeError("generate_reagents_encoder2: cannot load reagent list.")
         if enc.get(s, None) is None:
@@ -36,7 +37,7 @@ def prepare_reagents2(encoder, reagents):
     valid_reagents = preprocess_reagent_group.preprocess_reagents(valid_reagents)
     res = np.zeros((len(valid_reagents), len(encoder)), dtype=np.float32)
     for i in range(len(valid_reagents)):
-        idx = encoder.get(smiles_util.canonicalize_smiles(valid_reagents[i]), None)
+        idx = encoder.get(canonicalize_smiles(valid_reagents[i]), None)
         if idx is None:
             sys.stderr.write(
                 "prepare_reagents2(): encoder missing smiles=" + valid_reagents[i] + "\n"

@@ -8,8 +8,8 @@ from typing import Optional
 import numpy as np
 import tensorflow as tf
 
-from context.config import DEFAULT_CONFIG, ModelConfig, FpModelConfig, GraphModelConfig
-from context.v2 import search, graph_util, results_preprocess, smiles_util
+from askcos_context.config import DEFAULT_CONFIG, ModelConfig, FpModelConfig, GraphModelConfig
+from askcos_context.v2 import search, results_preprocess, utils
 
 
 def add_batch_dimension(x):
@@ -335,8 +335,8 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
 
     def encode_condensed_graph(self, smiles, **kwargs):
         # feature
-        f = graph_util.rxn2features(smiles)
-        atom, bond, conn = graph_util.encode_features_atommapped_dense_graph(
+        f = utils.rxn2features(smiles)
+        atom, bond, conn = utils.encode_features_atommapped_dense_graph(
             f, self.feature_encoder, isrand=False
         )
         atom, bond, conn = add_batch_dimension([atom, bond, conn])
@@ -357,8 +357,8 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
             May throw exceptions due to encoding failures.
         """
         # all reactants and products
-        f = graph_util.rxn2features(smiles)
-        (atom1, bond1, conn1, atom2, bond2, conn2) = graph_util.encode_features_non_mapped(
+        f = utils.rxn2features(smiles)
+        (atom1, bond1, conn1, atom2, bond2, conn2) = utils.encode_features_non_mapped(
             f, self.feature_encoder, isrand=False
         )
         atom1, bond1, conn1, atom2, bond2, conn2 = add_batch_dimension(
@@ -390,8 +390,8 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
         atom_dim, atom_nfeature, bond_nfeature = get_input_dims(atom1, bond1, batched=True)
         mask = np.zeros((1, self.max_num_reactants), dtype=np.float32)
         for i, r in enumerate(reactants):
-            f = graph_util.smiles2features(r)
-            a, b, c = graph_util.encode_features_onemol(f, self.feature_encoder, isrand=False)
+            f = utils.smiles2features(r)
+            a, b, c = utils.encode_features_onemol(f, self.feature_encoder, isrand=False)
             data_input[f"Input_atom_{i}"] = add_batch_dimension(a)
             data_input[f"Input_bond_{i}"] = add_batch_dimension(b)
             data_input[f"Input_conn_{i}"] = add_batch_dimension(c)
@@ -447,8 +447,8 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
             fp_radius = self.radius
         # feature
         smiles_splitted = smiles.split(" ")[0].split(">")
-        r_fp = smiles_util.get_morgan_fp(smiles_splitted[0], fp_radius, fp_length)
-        p_fp = smiles_util.get_morgan_fp(smiles_splitted[2], fp_radius, fp_length)
+        r_fp = smiles.get_morgan_fp(smiles_splitted[0], fp_radius, fp_length)
+        p_fp = smiles.get_morgan_fp(smiles_splitted[2], fp_radius, fp_length)
         input_fp = np.concatenate([r_fp, p_fp], axis=-1)
         return {"Input_fp": add_batch_dimension(input_fp)}
 
@@ -482,7 +482,7 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
             )
         mask = np.zeros(shape=(1, self.max_num_reactants), dtype=np.float32)
         for i, r in enumerate(reactants):
-            r_fp = smiles_util.get_morgan_fp(r, self.radius, self.length)
+            r_fp = smiles.get_morgan_fp(r, self.radius, self.length)
             data_input[f"Input_fp_reactant_{i}"] = add_batch_dimension(r_fp)
             mask[0, i] = 1
 

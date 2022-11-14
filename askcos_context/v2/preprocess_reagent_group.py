@@ -3,8 +3,8 @@ import sys
 
 from rdkit import Chem
 
-from context.config import DEFAULT_CONFIG
-from context.v2 import smiles_util
+from askcos_context.config import DEFAULT_CONFIG
+from askcos_context.v2.utils import canonicalize_smiles
 
 # These rules convert ions into their connected neutral molecular form.
 # This is neccessary for spiltting reagents.
@@ -18,7 +18,7 @@ def load_reagent_conv_rules():
     global reagent_conv_rules
     reagent_conv_rules = {}
     for k, v in _reagent_conv_rules.items():
-        s = smiles_util.canonicalize_smiles(k)
+        s = canonicalize_smiles(k)
         if k is not None:
             reagent_conv_rules[s] = v
 
@@ -26,7 +26,7 @@ def load_reagent_conv_rules():
 def canonicalize_smiles_reagent_conv_rules(s):
     if reagent_conv_rules is None:
         load_reagent_conv_rules()
-    s_can = smiles_util.canonicalize_smiles(s)
+    s_can = canonicalize_smiles(s)
     r = reagent_conv_rules.get(s_can, None)
     if r is not None:
         return r
@@ -115,7 +115,7 @@ def preprocess_reagents(reagents):
         print("reagents_charged: ", reagents_charged)
         raise ValueError("preprocess_reagents(): total charge is not zero, q=" + str(total_charge))
     if len(reagents_charged) > 0:
-        reagents_neutral.add(smiles_util.canonicalize_smiles(".".join(reagents_charged)))
+        reagents_neutral.add(canonicalize_smiles(".".join(reagents_charged)))
     reagents_neutral = list(reagents_neutral)
 
     # Rule 3, Canonicalization, replace using reagent_conv_rules.json

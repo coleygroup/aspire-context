@@ -1,4 +1,5 @@
 import sys
+from typing import Optional
 
 import numpy as np
 from rdkit.Chem import AllChem as Chem
@@ -13,7 +14,7 @@ def get_morgan_fp(smi: str, radius: int, length: int):
     )
 
 
-def canonicalize_smiles_rdkit(smi: str):
+def canonicalize_smiles_rdkit(smi: str) -> Optional[str]:
     try:
         # avoid 'Br[Br-]Br' problem
         return Chem.MolToSmiles(Chem.MolFromSmiles(smi, sanitize=False))
@@ -23,5 +24,5 @@ def canonicalize_smiles_rdkit(smi: str):
     return None
 
 
-def canonicalize_smiles(smi: str):
+def canonicalize_smiles(smi: str) -> str:
     return canonicalize_smiles_rdkit(smi)
