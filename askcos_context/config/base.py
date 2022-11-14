@@ -4,7 +4,7 @@ from os import PathLike
 from context.config.model import ModelConfig
 
 
-@dataclass
+@dataclass(frozen=True)
 class ContextConfig:
     reagent_conv_rules_path: PathLike
     default_models: dict[str, str]

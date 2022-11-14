@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from os import PathLike
 
 
-@dataclass
+@dataclass(frozen=True)
 class ModelConfig:
     reagents_path: PathLike
     reagents_model_path: PathLike
@@ -11,13 +11,13 @@ class ModelConfig:
     reactant_quantity_model_path: PathLike
 
 
-@dataclass
+@dataclass(frozen=True)
 class FpModelConfig(ModelConfig):
     length: int
     radius: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class GraphModelConfig(ModelConfig):
     encoder_path: PathLike
     condensed_graph: bool
