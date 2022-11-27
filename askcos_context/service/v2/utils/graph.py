@@ -148,17 +148,17 @@ def smiles2features(s):
     return {"atom_features": atom_features, "bond_features": bond_features}
 
 
-def rxn2features(r):
+def rxn2features(rxn):
     """
     Returns:
         dict:
             reactants: {atom_features:[], bond_features:[]}
             products:  {atom_features:[], bond_features:[]}
     """
-    r = remove_redundant_mapno(r)
-    r_split = r.split(" ")[0].split(">")
-    reactants = r_split[0]
-    products = r_split[2]
+    rxn = remove_redundant_mapno(rxn)
+    rxn_split = rxn.split(" ")[0].split(">")
+    reactants = rxn_split[0]
+    products = rxn_split[2]
     f_r = smiles2features(reactants)
     f_p = smiles2features(products)
     return {"reactants": f_r, "products": f_p}

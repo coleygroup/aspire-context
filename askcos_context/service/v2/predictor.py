@@ -2,6 +2,7 @@ from abc import abstractmethod
 import copy
 import json
 from pathlib import Path
+import pdb
 import pickle
 from typing import Optional
 
@@ -88,6 +89,16 @@ class ReactionContextRecommenderBase:
         self.reagent_quantity_model_path = config.reagent_quantity_model_path
         self.reactant_quantity_model_path = config.reactant_quantity_model_path
 
+    @abstractmethod
+    def encode_condensed_graph(self, smiles, **kwargs):
+        """Encode the input SMILES string"""
+
+    @abstractmethod
+    def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
+        """
+        Predict reactant quantities. Should be implemented by child class.
+        """
+
     def check_model_paths(self, *args):
         """
         Check that the configured model paths exist.
@@ -132,10 +143,8 @@ class ReactionContextRecommenderBase:
         self.reactant_quantity_model_tf, self.reactant_quantity_model = load_model(
             self.reactant_quantity_model_path
         )
-
-    @abstractmethod
-    def encode_condensed_graph(self, smiles, **kwargs):
-        """Encode the input SMILES string"""
+        
+        return self
 
     def encode_reagents(self, reagents):
         """
@@ -223,11 +232,6 @@ class ReactionContextRecommenderBase:
             amount[self.reagent_decoder[i]] = float(np.exp(y_pred[0, i]))
         return amount
 
-    @abstractmethod
-    def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
-        """
-        Predict reactant quantities. Should be implemented by child class.
-        """
 
     def predict(self, smiles, beam_size=10, reagents=None):
         """
@@ -285,7 +289,6 @@ class ReactionContextRecommenderBase:
 
         return res
 
-
 class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
     """
     This predictor requires atom mapped reactions.
@@ -325,7 +328,7 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
         with open(self.feature_encoder_path, "rb") as f:
             self.feature_encoder = pickle.load(f)
 
-        super().load_models()
+        return super().load_models()
 
     def encode_condensed_graph(self, smiles, **kwargs):
         # feature
