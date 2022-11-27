@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from os import PathLike
 
-from askcos_context.config.model import ModelConfig
+from askcos_context.service.config.model import ModelConfig
 
 
 @dataclass(frozen=True)

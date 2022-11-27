@@ -8,8 +8,8 @@ from typing import Optional
 import numpy as np
 import tensorflow as tf
 
-from askcos_context.config import DEFAULT_CONFIG, ModelConfig, FpModelConfig, GraphModelConfig
-from askcos_context.v2 import search, results_preprocess, utils
+from askcos_context.service.config import DEFAULT_CONFIG, ModelConfig, FpModelConfig, GraphModelConfig
+from askcos_context.service.v2 import search, results_preprocess, utils
 
 
 def add_batch_dimension(x):
@@ -48,10 +48,6 @@ def load_model(model_dir):
 
 
 class ReactionContextRecommenderBase:
-    """
-    Base class providing common methods for reaction context recommender.
-    """
-
     def __init__(self, model_name: Optional[str] = None, config: Optional[ModelConfig] = None):
         self.model_name = model_name
 
@@ -139,9 +135,7 @@ class ReactionContextRecommenderBase:
 
     @abstractmethod
     def encode_condensed_graph(self, smiles, **kwargs):
-        """
-        Encodes the input SMILES string. Should be implemented by child class.
-        """
+        """Encode the input SMILES string"""
 
     def encode_reagents(self, reagents):
         """
@@ -152,11 +146,12 @@ class ReactionContextRecommenderBase:
             Sum of one-hot encoding, 0 or 1
         """
         # build preprocessed structure
-        r = []
-        for i in reagents:
-            r.append({"smiles": i})
+        r = [{"smiles": i} for i in reagents]
+        # for i in reagents:
+        #     r.append()
         reagents_onehot = results_preprocess.prepare_reagents2(self.reagent_encoder, r)
         reagents_multiclass = results_preprocess.convert_onehots_to_multiclass(reagents_onehot)
+
         return add_batch_dimension(reagents_multiclass)
 
     def decode_reagents(self, encoded_reagents):
@@ -446,8 +441,8 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
             fp_radius = self.radius
         # feature
         smiles_splitted = smiles.split(" ")[0].split(">")
-        r_fp = smiles.get_morgan_fp(smiles_splitted[0], fp_radius, fp_length)
-        p_fp = smiles.get_morgan_fp(smiles_splitted[2], fp_radius, fp_length)
+        r_fp = utils.get_morgan_fp(smiles_splitted[0], fp_radius, fp_length)
+        p_fp = utils.get_morgan_fp(smiles_splitted[2], fp_radius, fp_length)
         input_fp = np.concatenate([r_fp, p_fp], axis=-1)
         return {"Input_fp": add_batch_dimension(input_fp)}
 
@@ -481,7 +476,7 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
             )
         mask = np.zeros(shape=(1, self.max_num_reactants), dtype=np.float32)
         for i, r in enumerate(reactants):
-            r_fp = smiles.get_morgan_fp(r, self.radius, self.length)
+            r_fp = utils.get_morgan_fp(r, self.radius, self.length)
             data_input[f"Input_fp_reactant_{i}"] = add_batch_dimension(r_fp)
             mask[0, i] = 1
 

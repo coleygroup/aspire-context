@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 
-from askcos_context.config.base import ContextConfig
-from askcos_context.config.model import FpModelConfig, GraphModelConfig
+from askcos_context.service.config.base import ContextConfig
+from askcos_context.service.config.model import FpModelConfig, GraphModelConfig
 
-DATA_DIR = Path(os.environ.get("ASKCOS_DATA_DIR", "data"))
-MODEL_DIR = DATA_DIR / "models"
+RESOURCES_DIR = Path(os.environ.get("ASKCOS_DATA_DIR", "askcos_context/resources"))
+MODEL_DIR = RESOURCES_DIR / "models"
 CONTEXT_DIR = MODEL_DIR / "context" / "v2"
 STAGE_1_DIR = CONTEXT_DIR / "stage1"
 STAGE_2_DIR = CONTEXT_DIR / "stage2"
@@ -18,23 +18,23 @@ DEFAULT_FP_CONFIG = FpModelConfig(
     reagents_model_path=(
         STAGE_1_DIR
         / "fp_multicategorical_50_input_reagents_fplength16384_fpradius3"
-        / "model-densegraph-04-4.18.hdf5.final-tf.20191118",
+        / "model-densegraph-04-4.18.hdf5.final-tf.20191118"
     ),
     temperature_model_path=(
         STAGE_2_DIR
         / "50_temperature_regression_fp_baseline"
-        / "model-densegraph-24-0.02.hdf5.final-tf.20191118",
+        / "model-densegraph-24-0.02.hdf5.final-tf.20191118"
     ),
     reagent_quantity_model_path=(
         STAGE_3_DIR
         / "50_amount_regression_fp_baseline"
-        / "model-densegraph-12-0.00.hdf5.final-tf.20191118",
+        / "model-densegraph-12-0.00.hdf5.final-tf.20191118"
     ),
     reactant_quantity_model_path=(
         CONTEXT_DIR
         / "stage3"
         / "50_amount_reactant_regression_fp_baseline_dense2048_3"
-        / "model-densegraph-24-0.05.hdf5.final-tf.20191118",
+        / "model-densegraph-24-0.05.hdf5.final-tf.20191118"
     ),
 )
 
@@ -45,21 +45,22 @@ DEFAULT_FP_SMALL_CONFIG = FpModelConfig(
     reagents_model_path=(
         STAGE_1_DIR
         / "fp_multicategorical_50_input_reagents_fplength2048_fpradius3"
-        / "model-densegraph-04-4.27.hdf5.final-tf.20191118",
+        / "model-densegraph-04-4.27.hdf5.final-tf.20191118"
     ),
     temperature_model_path=(
         STAGE_2_DIR
         / "50_temperature_regression_fp_baseline_fp2048"
-        / "model-densegraph-40-0.02.hdf5.final-tf.20191118",
+        / "model-densegraph-40-0.02.hdf5.final-tf.20191118"
     ),
     reagent_quantity_model_path=(
         STAGE_3_DIR
         / "50_amount_regression_fp_baseline_fp2048"
-        / "model-densegraph-48-0.00.hdf5.final-tf.20191118",
+        / "model-densegraph-48-0.00.hdf5.final-tf.20191118"
     ),
     reactant_quantity_model_path=(
-        STAGE_3_DIR / "50_amount_reactant_regression_fp_baseline_fp2048_dense512",
-        "model-densegraph-04-0.05.hdf5.final-tf.20191118",
+        STAGE_3_DIR
+        / "50_amount_reactant_regression_fp_baseline_fp2048_dense512"
+        / "model-densegraph-04-0.05.hdf5.final-tf.20191118"
     ),
 )
 
@@ -75,15 +76,15 @@ DEFAULT_GRAPH_CONFIG = GraphModelConfig(
     temperature_model_path=(
         STAGE_2_DIR
         / "50_temperature_regression"
-        / "model-densegraph-16-0.02.hd5.final-tf.20191118",
+        / "model-densegraph-16-0.02.hdf5.final-tf.20191118"
     ),
     reagent_quantity_model_path=(
-        STAGE_3_DIR / "50_amount_regression" / "model-densegraph-08-0.0.hdf5.final-tf.20191118",
+        STAGE_3_DIR / "50_amount_regression" / "model-densegraph-08-0.00.hdf5.final-tf.20191118"
     ),
     reactant_quantity_model_path=(
         STAGE_3_DIR
         / "50_amount_reactant_regression_dense2048_3"
-        / "model-densegraph-08-0.05.hdf5.final-tf.2019118",
+        / "model-densegraph-08-0.05.hdf5.final-tf.20191118"
     ),
 )
 
