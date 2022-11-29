@@ -8,5 +8,5 @@ class RecommendConditionRequest(BaseModel):
     reagents: list[str] | None = None
     beam_size: int = 10
 
-class RecommendConditionResponse(BaseModel):
-    conditions: list[ReactionConditions]
+class RecommendConditionResponse(list[ReactionConditions]):
+    pass
