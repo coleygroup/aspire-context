@@ -2,15 +2,19 @@ from abc import abstractmethod
 import copy
 import json
 from pathlib import Path
-import pdb
 import pickle
 from typing import Optional
 
 import numpy as np
 import tensorflow as tf
 
-from askcos_context.service.config import DEFAULT_CONFIG, ModelConfig, FpModelConfig, GraphModelConfig
 from askcos_context.service.v2 import search, results_preprocess, utils
+from askcos_context.service.v2.config import (
+    DEFAULT_CONFIG,
+    ModelConfig,
+    FpModelConfig,
+    GraphModelConfig,
+)
 
 
 def add_batch_dimension(x):
@@ -143,7 +147,7 @@ class ReactionContextRecommenderBase:
         self.reactant_quantity_model_tf, self.reactant_quantity_model = load_model(
             self.reactant_quantity_model_path
         )
-        
+
         return self
 
     def encode_reagents(self, reagents):
@@ -232,7 +236,6 @@ class ReactionContextRecommenderBase:
             amount[self.reagent_decoder[i]] = float(np.exp(y_pred[0, i]))
         return amount
 
-
     def predict(self, smiles, beam_size=10, reagents=None):
         """
         Predict reaction conditions for the input reaction SMILES.
@@ -288,6 +291,7 @@ class ReactionContextRecommenderBase:
             res.append(res_one)
 
         return res
+
 
 class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
     """

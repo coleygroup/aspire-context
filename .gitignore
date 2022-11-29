@@ -135,3 +135,5 @@ dmypy.json
 *.pkl
 *.pickle
 askcos_context/_version.py
+askcos_context/resources/models/context/v1/ehs_solvent_scores.csv
+askcos_context/resources/models/context/v1/weights.h5

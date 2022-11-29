@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-from askcos_context.service.config.base import ContextConfig
-from askcos_context.service.config.model import FpModelConfig, GraphModelConfig
+from askcos_context.service.v2.config.base import ContextConfig
+from askcos_context.service.v2.config.model import FpModelConfig, GraphModelConfig
 
 RESOURCES_DIR = Path(os.environ.get("ASKCOS_DATA_DIR", "askcos_context/resources"))
 MODEL_DIR = RESOURCES_DIR / "models"
