@@ -1,0 +1,3 @@
+[ ] git LFS store files
+[ ] figure out better object model / module structure
+[ ] deploy on docker on molgpu

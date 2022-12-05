@@ -8,8 +8,8 @@ from rdkit import Chem
 from scipy import stats
 import tensorflow as tf
 
-from askcos_context.service.v1 import utils
-from askcos_context.service.v1.config import ContextConfig, DEFAULT_CONFIG
+from askcos_context.v1 import utils
+from askcos_context.v1.config import ContextConfig, DEFAULT_CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +84,8 @@ class NeuralNetContextRecommender:
         self.load_ehs_dictionary(self.ehs_score_path)
         
         logger.info("Neural network context recommender has been loaded.")
+
+        return self
 
     def load_nn_model(self, model_path: PathLike, info_path: PathLike, weights_path: PathLike):
         """Loads specified Neural Network model.

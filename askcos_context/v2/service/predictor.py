@@ -8,8 +8,8 @@ from typing import Optional
 import numpy as np
 import tensorflow as tf
 
-from askcos_context.service.v2 import search, results_preprocess, utils
-from askcos_context.service.v2.config import (
+from askcos_context.v2.service import search, results_preprocess, utils
+from askcos_context.v2.config import (
     DEFAULT_CONFIG,
     ModelConfig,
     FpModelConfig,
@@ -99,19 +99,20 @@ class ReactionContextRecommenderBase:
 
     @abstractmethod
     def predict_reactant_quantities(self, smiles=None, reagents=None, encoded_reagents=None):
-        """
-        Predict reactant quantities. Should be implemented by child class.
-        """
+        pass
 
     def check_model_paths(self, *args):
-        """
-        Check that the configured model paths exist.
+        """Check that the configured model paths exist.
 
-        Args:
+        Parameters
+        ----------
+        *args : Iterable[PathLike]
             Additional file paths to check
 
-        Raises:
-            ValueError if any of the models do not exist.
+        Raises
+        ------
+        ValueError
+            if any of the model paths do not exist.
         """
         paths = [
             self.reagent_encoder_path,
@@ -158,11 +159,10 @@ class ReactionContextRecommenderBase:
         Returns:
             Sum of one-hot encoding, 0 or 1
         """
-        # build preprocessed structure
-        r = [{"smiles": i} for i in reagents]
+        reagents = [{"smiles": r} for r in reagents]
         # for i in reagents:
         #     r.append()
-        reagents_onehot = results_preprocess.prepare_reagents2(self.reagent_encoder, r)
+        reagents_onehot = results_preprocess.prepare_reagents2(self.reagent_encoder, reagents)
         reagents_multiclass = results_preprocess.convert_onehots_to_multiclass(reagents_onehot)
 
         return add_batch_dimension(reagents_multiclass)
@@ -185,10 +185,9 @@ class ReactionContextRecommenderBase:
         """
         if encoded_graph is None:
             encoded_graph = self.encode_condensed_graph(smiles)
-        if reagents is not None:
-            encoded_reagents = self.encode_reagents(reagents)
-        else:
-            encoded_reagents = None
+
+        encoded_reagents = self.encode_reagents(reagents) if reagents is not None else None
+        
         res = search.beam_search(
             self.reagent_model,
             copy.copy(encoded_graph),
@@ -200,13 +199,14 @@ class ReactionContextRecommenderBase:
             reagents=encoded_reagents,
         )  # keepall=False is beam search
         res_top = search.top_n_results(res, n=beam_size)
+
         if is_decode:
-            res_top_decode = []
-            for r in res_top:
-                res_top_decode.append((self.decode_reagents(r[0]), float(r[1])))
-            return res_top_decode
-        else:
-            return res_top
+            return [(self.decode_reagents(res[0]), float(res[1])) for res in res_top]
+            # for r in res_top:
+            #     res_top_decode.append((self.decode_reagents(r[0]), float(r[1])))
+            # return res_top_decode
+
+        return res_top
 
     def predict_temperature(
         self, smiles=None, reagents=None, encoded_graph=None, encoded_reagents=None
@@ -218,6 +218,7 @@ class ReactionContextRecommenderBase:
         data_input = copy.copy(encoded_graph)
         data_input["Input_reagent"] = encoded_reagents
         y_pred = self.temperature_model(**data_input)["output_regression"].numpy()
+
         return float(y_pred[0][0] * 273.15)
 
     def predict_reagent_quantities(
@@ -352,7 +353,7 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
         Reactants in smiles are splitted by '.'
 
         Returns:
-            dict: {'reactants': mole}
+            dict: {'reactants': mol}
 
         Raises:
             May throw exceptions due to encoding failures.
@@ -458,7 +459,7 @@ class ReactionContextRecommenderFP(ReactionContextRecommenderBase):
         Reactants in smiles are splitted by '.'
 
         Returns:
-            dict: {'reactants': mole}
+            dict: {'reactants': mol}
 
         Raises:
             May throw exceptions due to encoding failures.
