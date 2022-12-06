@@ -1,11 +1,25 @@
+from enum import auto
 from pydantic import BaseModel
 
-
-class RecommendConditionRequest(BaseModel):
-    smiles: str
-    reagents: list[str] | None = None
-    n_conditions: int = 10
+from askcos_context.common.utils.utils import AutoName
 
 
-# class RecommendConditionResponse(list[ReactionConditions]):
-#     pass
+class Role(AutoName):
+    REACTANT = auto()
+    REAGENT = auto()
+    PRODUCT = auto()
+    SOLVENT = auto()
+    CATALYST = auto()
+
+
+class Agent(BaseModel):
+    name: str | None
+    smi: str | None
+    amt: float | None
+    role: Role
+
+    
+class ConditionRecommendation(BaseModel):
+    agents: list[Agent]
+    temperature: float | None
+    score: float | None

@@ -3,7 +3,7 @@ import sys
 
 from rdkit import Chem
 
-from askcos_context.v2.config import DEFAULT_CONFIG
+from askcos_context.v2.services.config import DEFAULT_CONFIG
 from askcos_context.v2.services.utils import canonicalize_smiles
 
 # These rules convert ions into their connected neutral molecular form.

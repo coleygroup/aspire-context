@@ -1,1 +1,1 @@
-from .condition import RecommendConditionRequest
+from .request import RecommendConditionRequest

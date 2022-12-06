@@ -263,17 +263,16 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         rxnfp = pfp - rfp
         return pfp, rxnfp
 
-    def get_n_conditions(
+    def recommend(
         self, smi: str,
-        reagents: list[str] | None = None,
-        n_conditions: int = 10,
+        reagents: list[str] | None,
+        n_conditions: int,
         with_smiles=False,
-        return_scores=False,
+        return_scores=True,
         return_separate=False,
         **kwargs
-    ):
-        """_summary_
-
+    ) -> list:
+        """
         Parameters
         ----------
         smi : str
@@ -283,27 +282,25 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         n_conditions : int, default=10
         with_smiles : bool, default=False
             remove predictions that have only a name and no SMILES string
-        return_scores : bool, default=False
+        return_scores : bool, default=True
             return the scores of the recommendations as well
         return_separate : bool, default=False
             return predictions directly without postprocessing
 
-        Parameters
-        ----------
-        rxn (str): SMILES string for reaction.
-        n (int, optional): Number of condition recommendations to return.
-            (default: {10})
-        with_smiles (bool, optional): Remove predictions which only have
-            a name and no SMILES string (default: {False})
-        return_scores (bool, optional): Whether to also return the scores of the
-            recommendations. (default: {True})
-        return_separate (bool, optional): Return predictions directly without
-            postprocessing. (default: {False})
         Returns
         -------
         _type_
             _description_
         """
+        return self.get_n_conditions(smi, n_conditions, with_smiles, return_scores, return_separate)
+
+    def get_n_conditions(
+        self, smi: str,
+        n_conditions: int = 10,
+        with_smiles=False,
+        return_scores=False,
+        return_separate=False,
+    ):
         self.with_smiles = with_smiles
 
         try:
@@ -647,7 +644,7 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
 if __name__ == "__main__":
     model = NeuralNetContextRecommender().load()
     print(
-        model.get_n_conditions(
+        model.recommend(
             "CC1(C)OBOC1(C)C.Cc1ccc(Br)cc1>>Cc1cccc(B2OC(C)(C)C(C)(C)O2)c1",
             None,
             10,
