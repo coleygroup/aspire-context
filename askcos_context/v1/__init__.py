@@ -1,1 +1,1 @@
-from .service.predictor import NeuralNetContextRecommender
+from .services.predictor import NeuralNetContextRecommender

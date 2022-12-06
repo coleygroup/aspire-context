@@ -8,7 +8,8 @@ from typing import Optional
 import numpy as np
 import tensorflow as tf
 
-from askcos_context.v2.service import search, results_preprocess, utils
+from askcos_context.common.services.recommender import ReactionContextRecommender
+from askcos_context.v2.services import search, results_preprocess, utils
 from askcos_context.v2.config import (
     DEFAULT_CONFIG,
     ModelConfig,
@@ -52,7 +53,7 @@ def load_model(model_dir):
     return imported, imported_function
 
 
-class ReactionContextRecommenderBase:
+class ReactionContextRecommenderBase(ReactionContextRecommender):
     def __init__(self, model_name: Optional[str] = None, config: Optional[ModelConfig] = None):
         self.model_name = model_name
 
@@ -237,32 +238,38 @@ class ReactionContextRecommenderBase:
             amount[self.reagent_decoder[i]] = float(np.exp(y_pred[0, i]))
         return amount
 
-    def predict(self, smiles, beam_size=10, reagents=None):
+    def recommend(self, smi: str, reagents: list[str] | None = None, n_conditions: int = 10):
         """
-        Predict reaction conditions for the input reaction SMILES.
-
-        Args:
-            smiles: SMILES string of the reaction including reactant and product
-            beam_size: beam size of beam search for predicting reagents
+        Parameters
+        ----------
+        smiles : str
+        reagents : list[str] | None, default=None
+        n_conditions : int, default=10
 
         Returns:
-            list: (beam_size) sets of conditions::
+        -------
+        list[dict]
+            a list of condition sets, where each condition set is a dict of the form::
+                {
+                    'reagents': {'reagent_0_smi': mol_0, ... 'reagent_i_smi': mol_i},
+                    'reactants': {'reactant_0_smi': mol_0, ..., 'reactan_j_smi': mol_j},
+                    'temperature': T,
+                    'reagents_score': score
+                }
 
-            [{'reagents': {'reagent1_smiles': mole1, 'reagent2_smiles': mole2},
-              'reactants': {'reactant1_smiles': mole, 'reactant2_smiles': mole},
-              'temperature': T,
-              'reagents_score': score}, ...]
-
-        Raises:
+        Raises
+        ------
+        Exception
             May throw exceptions due to encoding failures
 
-        Note:
-            reagents_score is the product of individual reagent score, so it is very small.
+        Notes
+        -----
+        * `reagents_score` is the product of individual reagent score, so it is very small.
         """
-        encoded_graph = self.encode_condensed_graph(smiles)
+        encoded_graph = self.encode_condensed_graph(smi)
         reagents = self.predict_reagents(
             smiles=None,
-            beam_size=beam_size,
+            beam_size=n_conditions,
             is_decode=False,
             encoded_graph=encoded_graph,
             reagents=reagents,
@@ -286,7 +293,7 @@ class ReactionContextRecommenderBase:
                 encoded_reagents=encoded_reagents,
             )
             res_one["reactants"] = self.predict_reactant_quantities(
-                smiles=smiles, reagents=None, encoded_reagents=encoded_reagents
+                smiles=smi, reagents=None, encoded_reagents=encoded_reagents
             )
             # append results
             res.append(res_one)
@@ -306,6 +313,7 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
         self,
         model_name=DEFAULT_CONFIG.default_models["graph"],
         config: Optional[GraphModelConfig] = None,
+        *args, **kwargs
     ):
         super().__init__(model_name, config)
 
@@ -514,13 +522,13 @@ def __test_wln():
     print("temperature (K): ", t)
     print()
 
-    results = predictor_wln.predict(smiles=s)
+    results = predictor_wln.recommend(smi=s)
     print("ReactionContextRecommenderWLN")
     print("all predictions")
     print(json.dumps(results, indent=4))
     print()
 
-    results = predictor_wln.predict(smiles=s, reagents=["CC(=O)O"])
+    results = predictor_wln.recommend(smi=s, reagents=["CC(=O)O"])
     print("ReactionContextRecommenderWLN")
     print("preset reagents")
     print(json.dumps(results, indent=4))
@@ -528,22 +536,22 @@ def __test_wln():
 
     print("test")
     s = "CC(=O)O.Fc1ccccc1Nc1cccc2ccccc12>>Cc1c2cccc(F)c2nc2c1ccc1ccccc12"
-    results = predictor_wln.predict(smiles=s)
+    results = predictor_wln.recommend(smi=s)
     print("ReactionContextRecommenderWLN")
     print("all predictions")
     print(json.dumps(results, indent=4))
     s = "CC(=O)O.Fc1ccccc1Nc1ccccc1>>Cc1c2cccc(F)c2nc2c1cccc2"
-    results = predictor_wln.predict(smiles=s)
+    results = predictor_wln.recommend(smi=s)
     print("ReactionContextRecommenderWLN")
     print("smaller rings")
     print(json.dumps(results, indent=4))
     s = "CC(=O)O.c1ccccc1>>CC(=O)c1ccccc1"
-    results = predictor_wln.predict(smiles=s)
+    results = predictor_wln.recommend(smi=s)
     print("ReactionContextRecommenderWLN")
     print("benzene rings")
     print(json.dumps(results, indent=4))
     s = "CC(=O)Cl.c1ccccc1>>CC(=O)c1ccccc1"
-    results = predictor_wln.predict(smiles=s)
+    results = predictor_wln.recommend(smi=s)
     print("ReactionContextRecommenderWLN")
     print("benzene Cl rings")
     print(json.dumps(results, indent=4))
@@ -561,13 +569,13 @@ def __test_fp():
     print("temperature (K): ", t)
     print()
 
-    results = predictor_fp.predict(smiles=s)
+    results = predictor_fp.recommend(smi=s)
     print("ReactionContextRecommenderFP")
     print("all predictions")
     print(json.dumps(results, indent=4))
     print()
 
-    results = predictor_fp.predict(smiles=s, reagents=["OCC"])
+    results = predictor_fp.recommend(smi=s, reagents=["OCC"])
     print("ReactionContextRecommenderWLN")
     print("preset reagents")
     print(json.dumps(results, indent=4))

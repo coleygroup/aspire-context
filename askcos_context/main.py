@@ -2,9 +2,9 @@ from enum import Enum
 
 from fastapi import FastAPI
 
-from askcos_context.common.schemas import RecommendConditionRequest, RecommendConditionResponse
-from askcos_context.v1.service import NeuralNetContextRecommender
-from askcos_context.v2.service import ReactionContextRecommenderWLN, ReactionContextRecommenderFP
+from askcos_context.common.schemas import RecommendConditionRequest
+from askcos_context.v1.services import NeuralNetContextRecommender
+from askcos_context.v2.services import ReactionContextRecommenderWLN, ReactionContextRecommenderFP
 
 
 class ModelType(str, Enum):
@@ -36,7 +36,7 @@ def recommend(model_type: ModelType, request: RecommendConditionRequest):
         case ModelType.FP:
             model = fp_model
 
-    conditions = model.predict(request.smiles, request.n_conditions, request.reagents)
+    conditions = model.recommend(request.smiles, request.reagents, request.n_conditions)
     
     return conditions
 

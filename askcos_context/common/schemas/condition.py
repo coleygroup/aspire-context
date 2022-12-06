@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from askcos_context.common.schemas import ReactionConditions
-
 
 class RecommendConditionRequest(BaseModel):
     smiles: str
@@ -9,5 +7,5 @@ class RecommendConditionRequest(BaseModel):
     n_conditions: int = 10
 
 
-class RecommendConditionResponse(list[ReactionConditions]):
-    pass
+# class RecommendConditionResponse(list[ReactionConditions]):
+#     pass

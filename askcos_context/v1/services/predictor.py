@@ -8,13 +8,14 @@ from rdkit import Chem
 from scipy import stats
 import tensorflow as tf
 
-from askcos_context.v1 import utils
+from askcos_context.common.services.recommender import ReactionContextRecommender
+from askcos_context.v1.services import utils
 from askcos_context.v1.config import ContextConfig, DEFAULT_CONFIG
 
 logger = logging.getLogger(__name__)
 
 
-class NeuralNetContextRecommender:
+class NeuralNetContextRecommender(ReactionContextRecommender):
     """Reaction condition predictor using neural network architecture"""
 
     def __init__(self, with_smiles: bool = False, config: ContextConfig = DEFAULT_CONFIG, **kwargs):
@@ -90,15 +91,11 @@ class NeuralNetContextRecommender:
     def load_nn_model(self, model_path: PathLike, info_path: PathLike, weights_path: PathLike):
         """Loads specified Neural Network model.
 
-        Paramaters
+        Parameters
         ----------
         model_path : PathLike
-            path to file specifying model.
-            (default: {''})
-        info_path (str, optional): Path to file specifying encoders.
-            (default: {''})
-        weights_path (str, optional): Path to file specifying weights.
-            (default: {''})
+        info_path : PathLike
+        weights_path : PathLike
         """
         if not model_path:
             logger.error(
@@ -267,25 +264,50 @@ class NeuralNetContextRecommender:
         return pfp, rxnfp
 
     def get_n_conditions(
-        self, rxn, n=10, with_smiles=False, return_scores=False, return_separate=False, **kwargs
+        self, smi: str,
+        reagents: list[str] | None = None,
+        n_conditions: int = 10,
+        with_smiles=False,
+        return_scores=False,
+        return_separate=False,
+        **kwargs
     ):
-        """Returns the top n parsable reaction condition recommendations.
+        """_summary_
 
-        Args:
-            rxn (str): SMILES string for reaction.
-            n (int, optional): Number of condition recommendations to return.
-                (default: {10})
-            with_smiles (bool, optional): Remove predictions which only have
-                a name and no SMILES string (default: {False})
-            return_scores (bool, optional): Whether to also return the scores of the
-                recommendations. (default: {True})
-            return_separate (bool, optional): Return predictions directly without
-                postprocessing. (default: {False})
+        Parameters
+        ----------
+        smi : str
+            SMILES string for reaction., by default None
+        reagents : list[str] | None, default=None
+            NOTE: unused, maintained only for signature compatibility
+        n_conditions : int, default=10
+        with_smiles : bool, default=False
+            remove predictions that have only a name and no SMILES string
+        return_scores : bool, default=False
+            return the scores of the recommendations as well
+        return_separate : bool, default=False
+            return predictions directly without postprocessing
+
+        Parameters
+        ----------
+        rxn (str): SMILES string for reaction.
+        n (int, optional): Number of condition recommendations to return.
+            (default: {10})
+        with_smiles (bool, optional): Remove predictions which only have
+            a name and no SMILES string (default: {False})
+        return_scores (bool, optional): Whether to also return the scores of the
+            recommendations. (default: {True})
+        return_separate (bool, optional): Return predictions directly without
+            postprocessing. (default: {False})
+        Returns
+        -------
+        _type_
+            _description_
         """
         self.with_smiles = with_smiles
 
         try:
-            pfp, rxnfp = self.smiles_to_fp(rxn)
+            pfp, rxnfp = self.smiles_to_fp(smi)
             c1_input = []
             r1_input = []
             r2_input = []
@@ -299,10 +321,10 @@ class NeuralNetContextRecommender:
 
             top_combo_scores = [float(score) for score in top_combo_scores]
 
-            top_combos, top_combo_scores = top_combos[:n], top_combo_scores[:n]
+            top_combos, top_combo_scores = top_combos[:n_conditions], top_combo_scores[:n_conditions]
 
             if not return_separate:
-                top_combos = self.contexts_ehs_scores(top_combos[:n])
+                top_combos = self.contexts_ehs_scores(top_combos[:n_conditions])
 
             if return_scores:
                 return top_combos, top_combo_scores
@@ -310,7 +332,7 @@ class NeuralNetContextRecommender:
                 return top_combos
 
         except Exception as e:
-            logger.warning(f"Failed for reaction {rxn} because {e}. Returning None.")
+            logger.warning(f"Failed for reaction {smi} because {e}. Returning None.")
 
             return [[]]
 
@@ -623,11 +645,11 @@ class NeuralNetContextRecommender:
 
 
 if __name__ == "__main__":
-    cont = NeuralNetContextRecommender()
-    cont.load()
+    model = NeuralNetContextRecommender().load()
     print(
-        cont.get_n_conditions(
+        model.get_n_conditions(
             "CC1(C)OBOC1(C)C.Cc1ccc(Br)cc1>>Cc1cccc(B2OC(C)(C)C(C)(C)O2)c1",
+            None,
             10,
             with_smiles=False,
             return_scores=True,

@@ -1,8 +1,8 @@
 import sys
 import numpy as np
 
-from askcos_context.v2.service import preprocess_reagent_group
-from askcos_context.v2.service.utils import canonicalize_smiles
+from askcos_context.v2.services import preprocess_reagent_group
+from askcos_context.v2.services.utils import canonicalize_smiles
 
 
 def generate_reagents_encoder2(all_reagents):
