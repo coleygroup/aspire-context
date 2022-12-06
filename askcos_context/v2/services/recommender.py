@@ -10,7 +10,7 @@ import tensorflow as tf
 
 from askcos_context.common.services.recommender import ReactionContextRecommender
 from askcos_context.v2.services import search, results_preprocess, utils
-from askcos_context.v2.config import (
+from askcos_context.v2.services.config import (
     DEFAULT_CONFIG,
     ModelConfig,
     FpModelConfig,

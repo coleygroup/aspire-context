@@ -1,12 +1,13 @@
 import os
 from pathlib import Path
 
-from askcos_context.v2.config.base import ContextConfig
-from askcos_context.v2.config.model import FpModelConfig, GraphModelConfig
+from askcos_context.v2.services.config.base import ContextConfig
+from askcos_context.v2.services.config.model import FpModelConfig, GraphModelConfig
 
-RESOURCES_DIR = Path(os.environ.get("ASKCOS_DATA_DIR", "askcos_context/resources"))
-MODEL_DIR = RESOURCES_DIR / "models"
-CONTEXT_DIR = MODEL_DIR / "context" / "v2"
+_DEFAULT_PATH = "askcos_context/resources/models/context/v2"
+CONTEXT_DIR = Path(os.environ.get("ASKCOS_CONTEXT_V2_DIR", _DEFAULT_PATH))
+
+STAGE_0_DIR = CONTEXT_DIR / "stage0"
 STAGE_1_DIR = CONTEXT_DIR / "stage1"
 STAGE_2_DIR = CONTEXT_DIR / "stage2"
 STAGE_3_DIR = CONTEXT_DIR / "stage3"
@@ -14,7 +15,7 @@ STAGE_3_DIR = CONTEXT_DIR / "stage3"
 DEFAULT_FP_CONFIG = FpModelConfig(
     length=16384,
     radius=3,
-    reagents_path=CONTEXT_DIR / "stage0" / "reagents_list_minocc100.json",
+    reagents_path=STAGE_0_DIR / "reagents_list_minocc100.json",
     reagents_model_path=(
         STAGE_1_DIR
         / "fp_multicategorical_50_input_reagents_fplength16384_fpradius3"
@@ -41,7 +42,7 @@ DEFAULT_FP_CONFIG = FpModelConfig(
 DEFAULT_FP_SMALL_CONFIG = FpModelConfig(
     length=2048,
     radius=3,
-    reagents_path=CONTEXT_DIR / "stage0" / "reagents_list_minocc100.json",
+    reagents_path=STAGE_0_DIR / "reagents_list_minocc100.json",
     reagents_model_path=(
         STAGE_1_DIR
         / "fp_multicategorical_50_input_reagents_fplength2048_fpradius3"
@@ -65,9 +66,9 @@ DEFAULT_FP_SMALL_CONFIG = FpModelConfig(
 )
 
 DEFAULT_GRAPH_CONFIG = GraphModelConfig(
-    encoder_path=CONTEXT_DIR / "stage0" / "feature-statistics-final-s-natom50.pickle",
+    encoder_path=STAGE_0_DIR / "feature-statistics-final-s-natom50.pickle",
     condensed_graph=True,
-    reagents_path=CONTEXT_DIR / "stage0" / "reagents_list_minocc100.json",
+    reagents_path=STAGE_0_DIR / "reagents_list_minocc100.json",
     reagents_model_path=(
         STAGE_1_DIR
         / "50_multicategorical_input_reagents_wlnlen512_wlnstep3"
@@ -89,7 +90,7 @@ DEFAULT_GRAPH_CONFIG = GraphModelConfig(
 )
 
 DEFAULT_CONFIG = ContextConfig(
-    reagent_conv_rules_path=CONTEXT_DIR / "stage0" / "reagent_conv_rules.json",
+    reagent_conv_rules_path=STAGE_0_DIR / "reagent_conv_rules.json",
     default_models={"graph": "graph-20191118", "fp": "fp-small-20191118"},
     model_configs={
         "fp-20191118": DEFAULT_FP_CONFIG,
