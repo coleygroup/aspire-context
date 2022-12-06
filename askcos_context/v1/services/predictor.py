@@ -10,7 +10,7 @@ import tensorflow as tf
 
 from askcos_context.common.services.recommender import ReactionContextRecommender
 from askcos_context.v1.services import utils
-from askcos_context.v1.config import ContextConfig, DEFAULT_CONFIG
+from askcos_context.v1.services.config import ContextConfig, DEFAULT_CONFIG
 
 logger = logging.getLogger(__name__)
 
