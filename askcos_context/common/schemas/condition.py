@@ -17,7 +17,7 @@ class Agent(BaseModel):
     role: Role = Role.UNKNOWN
     amt: float | None = None
 
-    
+
 class ConditionRecommendation(BaseModel):
     agents: list[Agent]
     temperature: float | None

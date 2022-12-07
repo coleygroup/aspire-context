@@ -20,14 +20,12 @@ class ReactionContextRecommender(ABC):
             the number of conditions to return
         *args, **kwargs
             additional positional and keyword arguments
-            
+
         Returns
         -------
         list
             a list of conditions, the format of which is implementation-dependent
         """
 
-    def predict(
-        self, smiles: str, reagents: list[str] | None, n_conditions: int, *args, **kwargs
-    ):
+    def predict(self, smiles: str, reagents: list[str] | None, n_conditions: int, *args, **kwargs):
         return self.recommend(smiles, reagents, n_conditions, *args, **kwargs)

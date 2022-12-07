@@ -41,9 +41,7 @@ def mol_smi_to_morgan_fp(
         fp = np.zeros(length, dtype)
     else:
         try:
-            fp_bit = AllChem.GetMorganFingerprintAsBitVect(
-                mol, radius, nBits=length, **fp_kwargs
-            )
+            fp_bit = AllChem.GetMorganFingerprintAsBitVect(mol, radius, nBits=length, **fp_kwargs)
             fp = np.empty(length, dtype)
             DataStructs.ConvertToNumpyArray(fp_bit, fp)
         except Exception as e:

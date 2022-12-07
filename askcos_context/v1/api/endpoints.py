@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from askcos_context.common.schemas.condition import Agent, ConditionRecommendation, Role
 from askcos_context.common.schemas.request import (
     RecommendConditionRequest,
-    RecommendConditionResponse
+    RecommendConditionResponse,
 )
 from askcos_context.v1.api.deps import get_model
 from askcos_context.v1.services import NeuralNetContextRecommender
@@ -12,13 +12,10 @@ router = APIRouter()
 
 
 @router.post(
-    "/condition",
-    response_model=RecommendConditionResponse,
-    response_model_exclude_unset=True
+    "/condition", response_model=RecommendConditionResponse, response_model_exclude_unset=True
 )
 def recommend(
-    request: RecommendConditionRequest,
-    model: NeuralNetContextRecommender = Depends(get_model)
+    request: RecommendConditionRequest, model: NeuralNetContextRecommender = Depends(get_model)
 ):
     reactants = [Agent(smi_or_name=smi, role=Role.REACTANT) for smi in request.smiles.split(".")]
     conditions, scores = model.recommend(request.smiles, request.reagents, request.n_conditions)

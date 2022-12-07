@@ -8,7 +8,7 @@ from askcos_context.common.utils.utils import AutoName
 
 from askcos_context.v2.services.recommender import (
     ReactionContextRecommenderWLN,
-    ReactionContextRecommenderFP
+    ReactionContextRecommenderFP,
 )
 from askcos_context.v2.services.config import FpModelConfig, GraphModelConfig
 
@@ -25,12 +25,12 @@ def get_context_dir() -> Path:
 
 
 @cache
-def get_reagent_rules_path(context_dir = Depends(get_context_dir)) -> Path:
+def get_reagent_rules_path(context_dir=Depends(get_context_dir)) -> Path:
     return context_dir / "stage0" / "reagent_conv_rules.json"
 
 
 @cache
-def get_stage_dirs(context_dir = Depends(get_context_dir)) -> tuple[Path, Path, Path, Path]:
+def get_stage_dirs(context_dir=Depends(get_context_dir)) -> tuple[Path, Path, Path, Path]:
     stage_0_dir = context_dir / "stage0"
     stage_1_dir = context_dir / "stage1"
     stage_2_dir = context_dir / "stage2"
@@ -154,11 +154,10 @@ def get_graph_model(config: GraphModelConfig = Depends(get_graph_config)):
 @cache
 def get_models(
     fp_model: ReactionContextRecommenderFP = Depends(get_fp_model),
-    graph_model: ReactionContextRecommenderWLN = Depends(get_graph_model)
+    graph_model: ReactionContextRecommenderWLN = Depends(get_graph_model),
 ):
     # fp_big_config = config.model_configs[config.default_models["fp-big"]]
     # fp_big_model = ReactionContextRecommenderFP(None, config=fp_big_config).load_models()
-
 
     return {
         ModelType.FP.value: fp_model,

@@ -16,7 +16,7 @@ def get_context_config() -> ContextConfig:
         CONTEXT_DIR / "model.json",
         CONTEXT_DIR,
         CONTEXT_DIR / "weights.h5",
-        CONTEXT_DIR / "ehs_solvent_scores.csv"
+        CONTEXT_DIR / "ehs_solvent_scores.csv",
     )
 
 

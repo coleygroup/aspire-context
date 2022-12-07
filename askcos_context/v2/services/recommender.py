@@ -188,7 +188,7 @@ class ReactionContextRecommenderBase(ReactionContextRecommender):
             encoded_graph = self.encode_condensed_graph(smiles)
 
         encoded_reagents = self.encode_reagents(reagents) if reagents is not None else None
-        
+
         res = search.beam_search(
             self.reagent_model,
             copy.copy(encoded_graph),
@@ -313,7 +313,8 @@ class ReactionContextRecommenderWLN(ReactionContextRecommenderBase):
         self,
         model_name=DEFAULT_CONFIG.default_models["graph"],
         config: Optional[GraphModelConfig] = None,
-        *args, **kwargs
+        *args,
+        **kwargs,
     ):
         super().__init__(model_name, config)
 

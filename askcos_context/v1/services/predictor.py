@@ -52,7 +52,7 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         self.T_func = None
 
         self.with_smiles = with_smiles
-        self.fp_size = None # 2048
+        self.fp_size = None  # 2048
         self.ehs_dict = {}
 
         self.model_path = config.model_path
@@ -68,12 +68,7 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         ValueError
             if any of the paths do not exist
         """
-        paths = [
-            self.model_path,
-            self.info_path,
-            self.weights_path,
-            self.ehs_score_path,
-        ]
+        paths = [self.model_path, self.info_path, self.weights_path, self.ehs_score_path]
 
         for path in paths:
             if path is None or not Path(path).exists():
@@ -83,7 +78,7 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         """Load the configured model"""
         self.load_nn_model(self.model_path, self.info_path, self.weights_path)
         self.load_ehs_dictionary(self.ehs_score_path)
-        
+
         logger.info("Neural network context recommender has been loaded.")
 
         return self
@@ -264,13 +259,14 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         return pfp, rxnfp
 
     def recommend(
-        self, smi: str,
+        self,
+        smi: str,
         reagents: list[str] | None,
         n_conditions: int,
         with_smiles=False,
         return_scores=True,
         return_separate=False,
-        **kwargs
+        **kwargs,
     ) -> list:
         """
         Parameters
@@ -295,7 +291,8 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
         return self.get_n_conditions(smi, n_conditions, with_smiles, return_scores, return_separate)
 
     def get_n_conditions(
-        self, smi: str,
+        self,
+        smi: str,
         n_conditions: int = 10,
         with_smiles=False,
         return_scores=False,
@@ -318,7 +315,10 @@ class NeuralNetContextRecommender(ReactionContextRecommender):
 
             top_combo_scores = [float(score) for score in top_combo_scores]
 
-            top_combos, top_combo_scores = top_combos[:n_conditions], top_combo_scores[:n_conditions]
+            top_combos, top_combo_scores = (
+                top_combos[:n_conditions],
+                top_combo_scores[:n_conditions],
+            )
 
             if not return_separate:
                 top_combos = self.contexts_ehs_scores(top_combos[:n_conditions])

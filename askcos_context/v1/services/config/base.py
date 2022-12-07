@@ -8,4 +8,3 @@ class ContextConfig:
     info_path: str
     weights_path: PathLike
     ehs_score_path: PathLike
-    
