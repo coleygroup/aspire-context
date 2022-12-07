@@ -7,16 +7,14 @@ from askcos_context.common.utils.utils import AutoName
 class Role(AutoName):
     REACTANT = auto()
     REAGENT = auto()
-    PRODUCT = auto()
     SOLVENT = auto()
     CATALYST = auto()
 
 
 class Agent(BaseModel):
-    name: str | None
-    smi: str | None
-    amt: float | None
+    smi_or_name: str | None
     role: Role
+    amt: float | None = None
 
     
 class ConditionRecommendation(BaseModel):

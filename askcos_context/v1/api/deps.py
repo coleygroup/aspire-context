@@ -1,3 +1,4 @@
+from functools import cache
 import os
 from pathlib import Path
 
@@ -9,7 +10,7 @@ from askcos_context.v1.services.config import ContextConfig
 
 def get_context_config() -> ContextConfig:
     _DEFAULT_PATH = "askcos_context/resources/models/context/v1"
-    CONTEXT_DIR = Path(os.environ.get("ASKCOS_CONTEXT_V1_DIR", _DEFAULT_PATH))
+    CONTEXT_DIR = Path(os.getenv("ASKCOS_CONTEXT_V1_DIR", _DEFAULT_PATH))
 
     return ContextConfig(
         CONTEXT_DIR / "model.json",
@@ -19,5 +20,6 @@ def get_context_config() -> ContextConfig:
     )
 
 
+@cache
 def get_model(config: ContextConfig = Depends(get_context_config)):
     return NeuralNetContextRecommender(config=config).load()
