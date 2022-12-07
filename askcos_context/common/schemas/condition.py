@@ -9,11 +9,12 @@ class Role(AutoName):
     REAGENT = auto()
     SOLVENT = auto()
     CATALYST = auto()
+    UNKNOWN = auto()
 
 
 class Agent(BaseModel):
     smi_or_name: str | None
-    role: Role
+    role: Role = Role.UNKNOWN
     amt: float | None = None
 
     
