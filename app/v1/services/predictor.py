@@ -8,9 +8,9 @@ from rdkit import Chem
 from scipy import stats
 import tensorflow as tf
 
-from askcos_context.common.services.recommender import ReactionContextRecommender
-from askcos_context.v1.services import utils
-from askcos_context.v1.services.config import ContextConfig, DEFAULT_CONFIG
+from app.common.services.recommender import ReactionContextRecommender
+from app.v1.services import utils
+from app.v1.services.config import ContextConfig, DEFAULT_CONFIG
 
 logger = logging.getLogger(__name__)
 

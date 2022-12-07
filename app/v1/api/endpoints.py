@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
 
-from askcos_context.common.schemas.condition import Agent, ConditionRecommendation, Role
-from askcos_context.common.schemas.request import (
+from app.common.schemas.condition import Agent, ConditionRecommendation, Role
+from app.common.schemas.request import (
     RecommendConditionRequest,
     RecommendConditionResponse,
 )
-from askcos_context.v1.api.deps import get_model
-from askcos_context.v1.services import NeuralNetContextRecommender
+from app.v1.api.deps import get_model
+from app.v1.services import NeuralNetContextRecommender
 
 router = APIRouter()
 

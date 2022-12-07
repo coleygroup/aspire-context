@@ -1,3 +1,8 @@
 [ ] git LFS store files
-[ ] figure out better object model / module structure
+[x] figure out better object model / module structure
 [ ] deploy on docker on molgpu
+[ ] slides ( x3 )
+    - theory ( @connor )
+    - architecture
+    - example API call and response
+[ ] detailed README in repo

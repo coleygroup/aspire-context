@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 
-from askcos_context.v1.services.config.base import ContextConfig
+from app.v1.services.config.base import ContextConfig
 
-RESOURCES_DIR = Path(os.environ.get("ASKCOS_DATA_DIR", "askcos_context/resources"))
+RESOURCES_DIR = Path(os.environ.get("ASKCOS_DATA_DIR", "app/resources"))
 CONTEXT_DIR = RESOURCES_DIR / "models" / "context" / "v1"
 
 DEFAULT_CONFIG = ContextConfig(

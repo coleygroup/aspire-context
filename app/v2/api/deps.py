@@ -4,13 +4,13 @@ import os
 from pathlib import Path
 
 from fastapi import Depends
-from askcos_context.common.utils.utils import AutoName
+from app.common.utils.utils import AutoName
 
-from askcos_context.v2.services.recommender import (
+from app.v2.services.recommender import (
     ReactionContextRecommenderWLN,
     ReactionContextRecommenderFP,
 )
-from askcos_context.v2.services.config import FpModelConfig, GraphModelConfig
+from app.v2.services.config import FpModelConfig, GraphModelConfig
 
 
 class ModelType(AutoName):
@@ -20,8 +20,8 @@ class ModelType(AutoName):
 
 @cache
 def get_context_dir() -> Path:
-    _DEFAULT_PATH = "askcos_context/resources/models/context/v2"
-    return Path(os.environ.get("ASKCOS_CONTEXT_V2_DIR", _DEFAULT_PATH))
+    _DEFAULT_PATH = "app/resources/models/context/v2"
+    return Path(os.environ.get("app_V2_DIR", _DEFAULT_PATH))
 
 
 @cache

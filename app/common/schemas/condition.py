@@ -1,7 +1,7 @@
 from enum import auto
 from pydantic import BaseModel
 
-from askcos_context.common.utils.utils import AutoName
+from app.common.utils.utils import AutoName
 
 
 class Role(AutoName):

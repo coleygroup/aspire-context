@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from askcos_context.common.schemas.condition import ConditionRecommendation
+from app.common.schemas.condition import ConditionRecommendation
 
 
 class RecommendConditionRequest(BaseModel):

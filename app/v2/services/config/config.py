@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 
-from askcos_context.v2.services.config.base import ContextConfig
-from askcos_context.v2.services.config.model import FpModelConfig, GraphModelConfig
+from app.v2.services.config.base import ContextConfig
+from app.v2.services.config.model import FpModelConfig, GraphModelConfig
 
-_DEFAULT_PATH = "askcos_context/resources/models/context/v2"
-CONTEXT_DIR = Path(os.environ.get("ASKCOS_CONTEXT_V2_DIR", _DEFAULT_PATH))
+_DEFAULT_PATH = "app/resources/models/context/v2"
+CONTEXT_DIR = Path(os.environ.get("app_V2_DIR", _DEFAULT_PATH))
 
 STAGE_0_DIR = CONTEXT_DIR / "stage0"
 STAGE_1_DIR = CONTEXT_DIR / "stage1"

@@ -4,13 +4,13 @@ from pathlib import Path
 
 from fastapi import Depends
 
-from askcos_context.v1.services.predictor import NeuralNetContextRecommender
-from askcos_context.v1.services.config import ContextConfig
+from app.v1.services.predictor import NeuralNetContextRecommender
+from app.v1.services.config import ContextConfig
 
 
 def get_context_config() -> ContextConfig:
-    _DEFAULT_PATH = "askcos_context/resources/models/context/v1"
-    CONTEXT_DIR = Path(os.getenv("ASKCOS_CONTEXT_V1_DIR", _DEFAULT_PATH))
+    _DEFAULT_PATH = "app/resources/models/context/v1"
+    CONTEXT_DIR = Path(os.getenv("app_V1_DIR", _DEFAULT_PATH))
 
     return ContextConfig(
         CONTEXT_DIR / "model.json",

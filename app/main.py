@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from askcos_context.v1.api.endpoints import router as v1_router
-from askcos_context.v2.api.endpoints import router as v2_router
+from app.v1.api.endpoints import router as v1_router
+from app.v2.api.endpoints import router as v2_router
 
 
 app = FastAPI()
