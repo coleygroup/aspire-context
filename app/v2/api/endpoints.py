@@ -1,10 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.common.schemas.condition import Agent, ConditionRecommendation, Role
-from app.common.schemas.request import (
-    RecommendConditionRequest,
-    RecommendConditionResponse,
-)
+from app.common.schemas.request import RecommendConditionRequest, RecommendConditionResponse
 from app.v2.api.deps import ModelType, get_models
 from app.v2.services.recommender import ReactionContextRecommenderBase
 

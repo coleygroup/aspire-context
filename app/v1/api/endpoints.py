@@ -1,10 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.common.schemas.condition import Agent, ConditionRecommendation, Role
-from app.common.schemas.request import (
-    RecommendConditionRequest,
-    RecommendConditionResponse,
-)
+from app.common.schemas.request import RecommendConditionRequest, RecommendConditionResponse
 from app.v1.api.deps import get_model
 from app.v1.services import NeuralNetContextRecommender
 

@@ -10,12 +10,7 @@ import tensorflow as tf
 
 from app.common.services.recommender import ReactionContextRecommender
 from app.v2.services import search, results_preprocess, utils
-from app.v2.services.config import (
-    DEFAULT_CONFIG,
-    ModelConfig,
-    FpModelConfig,
-    GraphModelConfig,
-)
+from app.v2.services.config import DEFAULT_CONFIG, ModelConfig, FpModelConfig, GraphModelConfig
 
 
 def add_batch_dimension(x):
