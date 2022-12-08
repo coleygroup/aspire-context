@@ -2,6 +2,10 @@
 a standalone context recommendation module rewritten in FastAPI for ASPIRE project
 
 ## deployment
+
+### Docker
+
+#### stepwise
 1. run `docker build -t TAG_NAME .`.
     - we usually supply `-t ASKCOS_CONTEXT`
     - By default, all commands are run under the `mambauser` user. If you feeled compelled, you can change this value by supplying `--build-arg MAMBA_USER=USERNAME` to `docker build`.
