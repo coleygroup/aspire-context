@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 
 from fastapi import Depends
-from app.common.utils.utils import AutoName
 
+from app.common.utils.utils import AutoName
 from app.v2.services.recommender import (
     ReactionContextRecommenderWLN,
     ReactionContextRecommenderFP,
