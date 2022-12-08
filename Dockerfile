@@ -1,22 +1,26 @@
-FROM mambaorg/micromamba:latest AS base
+FROM mambaorg/micromamba:latest
 
+# 1. setup barebones env
 USER root
 
-COPY env.yml /tmp/env.yml
+RUN apt-get update \
+    && apt-get install git -y
+
+# 2. setup base python env
+USER $MAMBA_USER
+
+COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /askcos/context/env.yaml
+
+RUN micromamba install -y -n base -f /askcos/context/env.yaml \
+    && micromamba clean --all --yes
 
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
-RUN micromamba install -y -n base -f env.yml \
-    && pip install pyscreener \
-    && micromamba clean --all --yes
+# 3. setup actual python env
+WORKDIR /askcos/context
 
-USER askcos
+COPY --chown=$MAMBA_USER:$MAMBA_USER . .
 
-# ---------------------- #
+RUN pip install . --no-deps --no-cache-dir
 
-COPY --chown=askcos:askcos . /usr/local/askcos-core
-
-WORKDIR /home/askcos
-
-ENV PYTHONPATH=/usr/local/askcos-core${PYTHONPATH:+:${PYTHONPATH}}
-
+CMD ["uvicorn", "app.main:app", "--reload"]
