@@ -128,13 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-*.data*
-*.index
-*.json
-*.pb
-*.pkl
-*.pickle
 app/_version.py
-app/resources/models/context/v1/ehs_solvent_scores.csv
-app/resources/models/context/v1/weights.h5
 vial.py
