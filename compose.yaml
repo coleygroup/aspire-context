@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  context_service:
+    build: .
+    container_name: askcos-context-service
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    ports:
+      - 8080:8000
