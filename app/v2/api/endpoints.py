@@ -22,7 +22,6 @@ def recommend(
 
     recommendations = []
     for condition in model.recommend(request.smiles, request.reagents, request.n_conditions):
-        print(condition)
         reactants = [
             Agent(smi_or_name=smi, role=Role.REACTANT, amt=amt)
             for smi, amt in condition["reactants"].items()

@@ -198,15 +198,14 @@ class ReactionContextRecommenderBase(ReactionContextRecommender):
 
         if is_decode:
             return [(self.decode_reagents(res[0]), float(res[1])) for res in res_top]
-            # for r in res_top:
-            #     res_top_decode.append((self.decode_reagents(r[0]), float(r[1])))
-            # return res_top_decode
 
         return res_top
 
     def predict_temperature(
         self, smiles=None, reagents=None, encoded_graph=None, encoded_reagents=None
     ):
+        KELVIN_SCALE = 273.15
+
         if encoded_graph is None:
             encoded_graph = self.encode_condensed_graph(smiles)
         if encoded_reagents is None:
@@ -215,7 +214,7 @@ class ReactionContextRecommenderBase(ReactionContextRecommender):
         data_input["Input_reagent"] = encoded_reagents
         y_pred = self.temperature_model(**data_input)["output_regression"].numpy()
 
-        return float(y_pred[0][0] * 273.15)
+        return float(y_pred[0][0] * KELVIN_SCALE)
 
     def predict_reagent_quantities(
         self, smiles=None, reagents=None, encoded_graph=None, encoded_reagents=None
@@ -231,6 +230,7 @@ class ReactionContextRecommenderBase(ReactionContextRecommender):
         amount = {}
         for i in np.where(encoded_reagents[0, :] > 1e-6)[0]:
             amount[self.reagent_decoder[i]] = float(np.exp(y_pred[0, i]))
+            
         return amount
 
     def recommend(self, smi: str, reagents: list[str] | None = None, n_conditions: int = 10):
