@@ -9,5 +9,4 @@ class RecommendConditionRequest(BaseModel):
     n_conditions: int = 10
 
 
-class RecommendConditionResponse(list[ConditionRecommendation]):
-    pass
+RecommendConditionResponse = list[ConditionRecommendation]

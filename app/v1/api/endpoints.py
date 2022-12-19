@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/condition", response_model=RecommendConditionResponse, response_model_exclude_unset=True
+    "/recommend", response_model=RecommendConditionResponse, response_model_exclude_unset=True
 )
 def recommend(
     request: RecommendConditionRequest, model: NeuralNetContextRecommender = Depends(get_model)

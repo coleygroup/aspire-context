@@ -8,7 +8,7 @@ app = FastAPI()
 
 
 @app.get("/health")
-async def root():
+async def health():
     return {"message": "Alive!"}
 
 

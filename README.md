@@ -5,8 +5,8 @@ a standalone context recommendation module from Askcos rewritten as a web servic
 
 - [link](#first-steps)
 - [Deployment](#deployment)
-    - [Docker](#docker-preferred)
-    - [Native](#native)
+    - [Docker](#a-docker-preferred)
+    - [Native](#b-native)
 - [Testing](#testing)
 
 ## First steps
@@ -17,7 +17,7 @@ a standalone context recommendation module from Askcos rewritten as a web servic
 
 ## Deployment
 
-### Docker (preferred)
+### **A.** Docker (preferred)
 
 **Automatic** (via `docker compose`)
 1. `docker compose up -d`.
@@ -37,7 +37,7 @@ a standalone context recommendation module from Askcos rewritten as a web servic
 
 ___
 
-### Native
+### **B.** Native
 _Note_: all steps should be run from the top-level directory of this repo
 
 0. (if necessary) install (micro)conda

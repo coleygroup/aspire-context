@@ -13,7 +13,7 @@ class Role(AutoName):
 
 
 class Agent(BaseModel):
-    smi_or_name: str | None
+    smi_or_name: str
     role: Role = Role.UNKNOWN
     amt: float | None = None
 

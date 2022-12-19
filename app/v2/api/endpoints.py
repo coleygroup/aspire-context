@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/condition/{model_type}",
+    "/recommend/{model_type}",
     response_model=RecommendConditionResponse,
     response_model_exclude_unset=True,
 )
