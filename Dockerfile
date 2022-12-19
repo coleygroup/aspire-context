@@ -1,27 +1,17 @@
-FROM mambaorg/micromamba:latest
+FROM python:3.10-slim
 
-# --- 1. setup barebones env --- #
 USER root
 
 RUN apt-get update \
     && apt-get install git -y
 
-# --- 2. setup base python env --- #
-USER $MAMBA_USER
+# RUN useradd --create-home -s /bin/bash ASKCOS
+# USER ASKCOS
 
-COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /askcos/context/env.yaml
-
-RUN micromamba install -y -n base -f /askcos/context/env.yaml \
-    && micromamba clean --all --yes
-
-ARG MAMBA_DOCKERFILE_ACTIVATE=1
-
-# --- 3. setup actual python env --- #
 WORKDIR /askcos/context
 
-COPY --chown=$MAMBA_USER:$MAMBA_USER . .
+COPY . .
 
-RUN pip install . --no-deps --no-cache-dir
+RUN pip install -r requirements.txt --no-cache-dir
 
-# --- 4. run it! --- #
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
